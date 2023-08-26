@@ -8,7 +8,6 @@
     "knex": "node --no-warnings --loader tsx ./node_modules/knex/bin/cli.js",
     "migrate:create": "npm run knex -- migrate:make --migrations-directory ./src/db/migrations -x ts",
     "lint": "eslint src --ext .ts --fix"
-
   },
   "keywords": [],
   "author": "",
@@ -21,8 +20,10 @@
     "typescript": "^5.1.6"
   },
   "dependencies": {
+    "dotenv": "^16.3.1",
     "fastify": "^4.19.2",
     "knex": "^2.5.0",
-    "sqlite3": "^5.1.6"
+    "sqlite3": "^5.1.6",
+    "zod": "^3.22.2"
   }
 }
