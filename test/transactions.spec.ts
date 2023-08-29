@@ -74,7 +74,7 @@ describe('Transactions Routes', () => {
 
             const transactionId = listTransactionsResponse.body[0].id
 
-            console.log(`AAAAAAAAAAAAAAAAAAAAA ${transactionId}`)
+            console.log(`caiu no log ${transactionId}`)
             
             const getTransactionRespone = await request (app.server)
             .get(`/transactions/${transactionId}`)
