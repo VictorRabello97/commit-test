@@ -28,7 +28,7 @@ export async function transactionsRoutes(app: FastifyInstance){
     
     app.post('/', async (request, reply) => {
 
-        createTransactions(request, reply)
+        await createTransactions(request, reply)
 
     })
 
