@@ -1,4 +1,6 @@
 tmp/app.db
+test
 node_modules
 .env
 .env.test
+nextSteps.md
