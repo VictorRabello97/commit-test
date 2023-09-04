@@ -1,17 +1,11 @@
 import { FastifyInstance, FastifyRequest, FastifyReply } from "fastify";
 import { CheckSessionIdExist } from "../middleweres/checkSessionIdExist"
-import {allExpenses, createExpenses, specificExpense, summaryOfAllExpenses, summaryOfSpecificExpense } from "../controller/expensesControllers";
+import {allExpenses, createExpenses, summaryOfAllExpenses, summaryOfSpecificExpense } from "../controller/expensesControllers";
 
 export async function expensesRoute(app: FastifyInstance){
     
     app.post('/', async (request, reply) => {
         await createExpenses(request, reply)
-    })
-
-    app.get('/specificExpense', {preHandler: [CheckSessionIdExist]}, async (request) =>{
-        const animals = await specificExpense(request)
-
-        return animals
     })
 
     app.get('/summary', {preHandler: [CheckSessionIdExist]}, async (request) => {
@@ -28,9 +22,9 @@ export async function expensesRoute(app: FastifyInstance){
     })
 
     app.get('/', {preHandler: [CheckSessionIdExist]},
-    async (request) => {
+    async (request, reply) => {
 
-        const expense = await allExpenses(request)
+        const expense = await allExpenses(request, reply)
         return expense
     })
 
