@@ -1,4 +1,4 @@
-import { knex, Knex } from 'knex'; // Importe tanto o valor 'knex' quanto
+import { knex, Knex } from 'knex';
 import { v4 as uuidv4 } from 'uuid';
 
 

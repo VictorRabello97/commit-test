@@ -2,28 +2,28 @@ import { FastifyReply, FastifyRequest } from "fastify"
 import { z } from "zod"
 import {knex} from "../database"
 import { randomUUID } from "node:crypto"
+import ProjectsRepository from "../repository/projectsRepository"
 
 
 
-export async function getAllTransaction(request: FastifyRequest){
+export async function getAllProjects(request: FastifyRequest, reply: FastifyReply){
    
     const {sessionId} = request.cookies
 
-    console.log(request.body)
+    if (sessionId === undefined) {
+        throw reply.code(404).send('Unauthorized')
+      }
 
+    const getAllProject = new ProjectsRepository(knex)
+
+    const projects = getAllProject.getAllProjects(sessionId)
     
-    const projects = await knex('projects')
-    .where('session_id', sessionId)
-    .select()
-    
-    console.log("sessionId:", sessionId);
-    
-        return projects
+    return projects
 }
 
 
 
-export async function getProjectsByDateRange(request: FastifyRequest) {
+export async function getProjectsByDateRange(request: FastifyRequest, reply: FastifyReply) {
     const { sessionId } = request.cookies;
     
     const getProjectsParamsSchema = z.object({
@@ -31,52 +31,56 @@ export async function getProjectsByDateRange(request: FastifyRequest) {
         endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     });
 
-    try {
+    if (sessionId === undefined) {
+        throw reply.code(404).send('Unauthorized')
+      }
+
+    
         const { startDate, endDate } = getProjectsParamsSchema.parse(request.query);
 
-        const projects = await knex('projects')
-            .where('session_id', sessionId)
-            .whereBetween('created_at', [startDate, endDate])
-            .select();
+        const getProjectByDate = new ProjectsRepository(knex)
 
-        return projects;
-    } catch (error) {
-        console.error('no project for selected data:', error);
-        throw new Error('no project for selected data');
-    }
+        const projectsByDate = getProjectByDate.getProjectsByDate(sessionId, startDate, endDate)
+
+        return projectsByDate
+
+  
 }
 
-export async function getProjectById(request: FastifyRequest){
+
+export async function getProjectById(request: FastifyRequest, reply: FastifyReply){
     const getTransactionsParamsSchema = z.object({
         id: z.string().uuid()
     })
     
     const {sessionId} = request.cookies
+
+    if (sessionId === undefined) {
+        throw reply.code(404).send('Unauthorized')
+      }
     
     const { id } = getTransactionsParamsSchema.parse(request.params)
 
-    
-        const projects = await knex('projects')
-        .where({
-            session_id: sessionId,
-            id: id
-        })
-        .first()
+    const getProjectId = new ProjectsRepository(knex)
 
-        
-        return {projects}
+    const projectId  = getProjectId.getProjectsById(sessionId, id)
+
+    return projectId
 }
 
-export async function balanceOfProjects(request: FastifyRequest){
+export async function balanceOfProjects(request: FastifyRequest, reply: FastifyReply){
     const {sessionId} = request.cookies
+
+    if (sessionId === undefined) {
+        throw reply.code(404).send('Unauthorized')
+      }
     
+    const balanceProject = new ProjectsRepository(knex)
+
+    const balance = await balanceProject.getBalanceOfProjects(sessionId)
+
+    return balance;
     
-    const summary = await knex('projects')
-    .where('session_id', sessionId)
-        .sum('value', {as : 'summary of values'}).first()
-        //SUM FAZ A SOMATÓRIA DA COLUNA, AS É PRA RENOMEAR NO RETORNO.
-        
-        return { summary } 
 }
 
 export async function createProject(request: FastifyRequest, reply: FastifyReply){
@@ -90,8 +94,7 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
         })
 
         
-        try { 
-            const {project_name, client_name, value, its_paid, person} = createTransactionBodySchema
+        const {project_name, client_name, value, its_paid, person} = createTransactionBodySchema
         .parse(request.body)
         
         let sessionId = request.cookies.sessionId
@@ -105,23 +108,20 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
             })
         }
         
-        await knex('projects')
-        .insert({
-            id: randomUUID(),
+        const createProjects = new ProjectsRepository(knex)
+        
+        await createProjects.postCreateProject({
             project_name,
             client_name,
             value,
             its_paid,
-            person,
             session_id: sessionId,
+            person,
         })
 
-    return reply.code(201).send({ message: 'Project created' });
-        } catch (error) {
-            console.error("Error creating project:", error);
+        return reply.code(201).send({ message: 'Project Created' });
 
-            return reply.code(400).send({message: 'Error', error});
-        }
+
     } 
         
 export async function deleteProject(request: FastifyRequest, reply: FastifyReply){
@@ -130,17 +130,18 @@ export async function deleteProject(request: FastifyRequest, reply: FastifyReply
             })
         
             const {sessionId} = request.cookies
+
+            if (sessionId === undefined) {
+                throw reply.code(404).send('Unauthorized')
+              }
         
             const { id } = getTransactionsParamsSchema.parse(request.params)
         
-            const transactions = await knex('projects')
-            .delete() 
-            .where({
-                session_id: sessionId,
-                id: id
-            })
-        
-            return transactions
+            const deleteProjects = new ProjectsRepository(knex)
+
+            const deleteproject = await deleteProjects.deleteProjectById(sessionId, id)
+
+            return deleteproject
 }
 
 

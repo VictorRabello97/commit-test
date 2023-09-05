@@ -1,6 +1,6 @@
 import { FastifyInstance } from "fastify"
 import { CheckSessionIdExist } from "../middleweres/checkSessionIdExist"
-import { createProject, getAllTransaction, balanceOfProjects, getProjectById, deleteProject, getProjectsByDateRange} from "../controller/ProjectsControllers.js"
+import { createProject, getAllProjects, balanceOfProjects, getProjectById, deleteProject, getProjectsByDateRange} from "../controller/ProjectsControllers.js"
 
 
 
@@ -9,26 +9,26 @@ export async function projectsRoutes(app: FastifyInstance){
 
     app.get('/balance', {preHandler: [CheckSessionIdExist]}, async (request, reply) => {
         
-        const summary = await balanceOfProjects(request)
-        return summary
+        const balance = await balanceOfProjects(request, reply)
+        return balance
     })
 
     app.get('/', {preHandler: [CheckSessionIdExist]},
-    async (request) => {
+    async (request, reply) => {
 
-        const transactions = await getAllTransaction(request)
-        return transactions
+        const getAll = await getAllProjects(request, reply)
+        return getAll
     })
 
-    app.get('/data',  {preHandler: [CheckSessionIdExist]}, async (request)=>{
-        const projec = await getProjectsByDateRange(request)
-        return projec
+    app.get('/data',  {preHandler: [CheckSessionIdExist]}, async (request, reply)=>{
+        const getByDate = await getProjectsByDateRange(request, reply)
+        return getByDate
     })
 
-    app.get('/:id', {preHandler: [CheckSessionIdExist]}, async (request) => {
+    app.get('/:id', {preHandler: [CheckSessionIdExist]}, async (request, reply) => {
         
-        const transactionsId = await getProjectById(request)
-        return transactionsId
+        const getById = await getProjectById(request, reply)
+        return getById
     })
     
     app.post('/', async (request, reply) => {
@@ -39,9 +39,9 @@ export async function projectsRoutes(app: FastifyInstance){
 
     app.delete('/:id', {preHandler: [CheckSessionIdExist]}, async (request, reply) => {
         
-        const deleteTransactions = await deleteProject(request, reply)
+        const deleteProjects = await deleteProject(request, reply)
         
-        return deleteTransactions
+        return deleteProjects
 
     })
 }

@@ -4,7 +4,7 @@ import {knex} from "../database"
 import { randomUUID } from "node:crypto"
 import ExpenseRepository from "../repository/expensesRepository"
 
-export async function createExpenses(request: FastifyRequest, reply:FastifyReply){
+export async function postCreateExpense(request: FastifyRequest, reply:FastifyReply){
     const createExpenseSchema = z.object({
         expenses_name: z.string(),
         image_path: z.string(),
@@ -43,7 +43,7 @@ export async function createExpenses(request: FastifyRequest, reply:FastifyReply
 
 
 
-export async function summaryOfAllExpenses(request: FastifyRequest){
+export async function getAllSummary(request: FastifyRequest){
         const { sessionId } = request.cookies
     
         if (sessionId === undefined) {
@@ -61,7 +61,7 @@ export async function summaryOfAllExpenses(request: FastifyRequest){
     
 
 
-export async function summaryOfSpecificExpense(request: FastifyRequest, reply: FastifyReply){
+export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply: FastifyReply){
 
     const createSchema = z.object({
         name: z.string()
@@ -81,11 +81,11 @@ export async function summaryOfSpecificExpense(request: FastifyRequest, reply: F
     
     return summary
 
-}
+  }
 
   
        
-export async function allExpenses(request: FastifyRequest, reply: FastifyReply){
+export async function getAllExpenses(request: FastifyRequest, reply: FastifyReply){
     const {sessionId} = request.cookies
     
     const expensesRepository = new ExpenseRepository(knex)
@@ -97,7 +97,7 @@ export async function allExpenses(request: FastifyRequest, reply: FastifyReply){
     const listOffAllExpanses = expensesRepository.getListOfAllExpenses(sessionId)
     
     return listOffAllExpanses
-}
+  }
     
         
 
