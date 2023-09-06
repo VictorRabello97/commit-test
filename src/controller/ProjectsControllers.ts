@@ -5,7 +5,6 @@ import { randomUUID } from "node:crypto"
 import ProjectsRepository from "../repository/projectsRepository"
 
 
-
 export async function getAllProjects(request: FastifyRequest, reply: FastifyReply){
    
     const {sessionId} = request.cookies
@@ -19,34 +18,31 @@ export async function getAllProjects(request: FastifyRequest, reply: FastifyRepl
     const projects = getAllProject.getAllProjects(sessionId)
     
     return projects
-}
-
-
-
+    }
+    
 export async function getProjectsByDateRange(request: FastifyRequest, reply: FastifyReply) {
-    const { sessionId } = request.cookies;
+        const { sessionId } = request.cookies;
+        
+        const getProjectsParamsSchema = z.object({
+            startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+            endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+        });
     
-    const getProjectsParamsSchema = z.object({
-        startDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-        endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
-    });
-
-    if (sessionId === undefined) {
-        throw reply.code(404).send('Unauthorized')
-      }
-
+        if (sessionId === undefined) {
+            throw reply.code(404).send('Unauthorized')
+          }
     
-        const { startDate, endDate } = getProjectsParamsSchema.parse(request.query);
-
-        const getProjectByDate = new ProjectsRepository(knex)
-
-        const projectsByDate = getProjectByDate.getProjectsByDate(sessionId, startDate, endDate)
-
-        return projectsByDate
-
-  
-}
-
+        
+            const { startDate, endDate } = getProjectsParamsSchema.parse(request.query);
+    
+            const getProjectByDate = new ProjectsRepository(knex)
+    
+            const projectsByDate = getProjectByDate.getProjectsByDate(sessionId, startDate, endDate)
+    
+            return projectsByDate
+    
+      
+    }
 
 export async function getProjectById(request: FastifyRequest, reply: FastifyReply){
     const getTransactionsParamsSchema = z.object({
@@ -66,7 +62,7 @@ export async function getProjectById(request: FastifyRequest, reply: FastifyRepl
     const projectId  = getProjectId.getProjectsById(sessionId, id)
 
     return projectId
-}
+    }
 
 export async function balanceOfProjects(request: FastifyRequest, reply: FastifyReply){
     const {sessionId} = request.cookies
@@ -81,7 +77,7 @@ export async function balanceOfProjects(request: FastifyRequest, reply: FastifyR
 
     return balance;
     
-}
+    }
 
 export async function createProject(request: FastifyRequest, reply: FastifyReply){
         const createTransactionBodySchema = z.object({
@@ -142,7 +138,11 @@ export async function deleteProject(request: FastifyRequest, reply: FastifyReply
             const deleteproject = await deleteProjects.deleteProjectById(sessionId, id)
 
             return deleteproject
-}
+    }
+
+
+
+
 
 
     

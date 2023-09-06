@@ -34,7 +34,7 @@ export async function postCreateExpense(request: FastifyRequest, reply:FastifyRe
           session_id: sessionId,
           value,
         });
-    
+            
         return reply.code(201).send({ message: 'Expense Created' });
       } catch (error) {
         return reply.code(400).send({ message: 'Error', error });

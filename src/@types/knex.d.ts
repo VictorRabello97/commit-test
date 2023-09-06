@@ -21,6 +21,14 @@ declare module 'knex/types/tables'{
             created_at: string,
             session_id?: string
         }
+
+        users:{
+            id: string,
+            username: string,
+            password: string,
+            balance: number,
+            session_id?: string,
+        }
     }
     }
 
