@@ -44,11 +44,26 @@ class ProjectsRepository {
         its_paid: string,
         person: string
     }) {
-        const id = uuidv4()
-        return this.db('projects')
-        .insert({
-            id, ... projectsData
-        })
+        const id = uuidv4();
+    await this.db('projects').insert({
+      id, ...projectsData
+    });
+
+    console.log('aaaaaaaaaaaaaaa')
+
+    const user = await this.db('users').where({session_id: projectsData.session_id})
+    .first()
+
+    console.log(user)
+
+    if (user){
+      await this.db('users')
+      .where({id: user.id})
+      .update({balance: user.balance + projectsData.value})
+
+      console.log('Saldo após a atualização:', user.balance);
+
+    }
     }
 
     async deleteProjectById(sessionId: string, id: string){

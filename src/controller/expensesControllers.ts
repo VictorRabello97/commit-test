@@ -17,6 +17,8 @@ export async function postCreateExpense(request: FastifyRequest, reply:FastifyRe
 
         let sessionId = request.cookies.sessionId
 
+        console.log(sessionId)
+
         if (!sessionId){
             sessionId = randomUUID()
 

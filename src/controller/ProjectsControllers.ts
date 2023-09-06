@@ -95,6 +95,8 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
         
         let sessionId = request.cookies.sessionId
 
+        console.log(sessionId)
+
         if (!sessionId) {
             sessionId = randomUUID()
 

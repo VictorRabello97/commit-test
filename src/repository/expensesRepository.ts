@@ -30,8 +30,6 @@ class ExpenseRepository {
       id, ...expenseData
     });
 
-    console.log('aaaaaaaaaaaaaaa')
-
     const user = await this.db('users').where({session_id: expenseData.session_id})
     .first()
 
@@ -40,9 +38,7 @@ class ExpenseRepository {
     if (user){
       await this.db('users')
       .where({id: user.id})
-      .update({balance: user.balance + expenseData.value})
-
-      console.log('Saldo após a atualização:', user.balance);
+      .update({balance: user.balance - expenseData.value})
 
     }
     
