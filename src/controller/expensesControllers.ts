@@ -72,7 +72,7 @@ export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply
     const { sessionId } = request.cookies
 
     if (sessionId === undefined) {
-        throw reply.code(404).send('Unauthorized ')
+        throw reply.code(401).send('Unauthorized')
       }
     
     const { name } = createSchema.parse(request.query)
@@ -93,7 +93,7 @@ export async function getAllExpenses(request: FastifyRequest, reply: FastifyRepl
     const expensesRepository = new ExpenseRepository(knex)
 
     if (sessionId === undefined) {
-        throw reply.code(404).send('Unauthorized ')
+        throw reply.code(401).send('Unauthorized ')
       }
 
     const listOffAllExpanses = expensesRepository.getListOfAllExpenses(sessionId)
