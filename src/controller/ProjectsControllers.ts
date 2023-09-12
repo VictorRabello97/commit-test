@@ -74,25 +74,28 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
 
     })
 
-    const { sub } = request.user
-
+    
     const { project_name, client_name, value, its_paid, person } = createTransactionBodySchema
-        .parse(request.body)
-
+    .parse(request.body)
+    
     let sessionId = request.cookies.sessionId
-
-
+    
+    
     console.log(sessionId)
-
+    
     if (!sessionId) {
         sessionId = randomUUID()
-
+        
         reply.cookie('sessionId', sessionId, {
             path: '/',
             maxAge: 1000 * 60 * 60 * 24 * 7 // days
         })
     }
 
+    const { sub } = request.user
+
+    console.log(sub)
+    
     const createProjects = new ProjectsRepository(knex)
 
     await createProjects.postCreateProject({

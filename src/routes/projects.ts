@@ -31,7 +31,7 @@ export async function projectsRoutes(app: FastifyInstance) {
         return getById
     })
 
-    app.post('/', async (request, reply) => {
+    app.post('/',  { preHandler: [CheckJWT] },  async (request, reply) => {
 
         await createProject(request, reply)
 

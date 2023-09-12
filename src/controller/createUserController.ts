@@ -11,10 +11,10 @@ export async function postCreateUsers(request: FastifyRequest, reply: FastifyRep
     const createSchema = z.object({
         username: z.string(),
         password: z.string(),
-        balance: z.number(),
+        balance: z.number().default(0)
     })
 
-    const { username, password, balance } = createSchema.parse(request.body)
+    const { username, password, balance} = createSchema.parse(request.body)
 
     let sessionId = request.cookies.sessionId
 
@@ -34,7 +34,7 @@ export async function postCreateUsers(request: FastifyRequest, reply: FastifyRep
         username,
         password,
         session_id: sessionId,
-        balance,
+        balance
     })
 
     return reply.code(201).send({ message: 'user created' })
