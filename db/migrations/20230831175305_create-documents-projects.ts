@@ -9,7 +9,7 @@ export async function up(knex: Knex): Promise<void> {
         table.decimal('value', 10, 2).notNullable();
         table.text('its_paid')
         table.timestamp('created_at').defaultTo(knex.fn.now()).notNullable()
-})
+    })
 
 }
 

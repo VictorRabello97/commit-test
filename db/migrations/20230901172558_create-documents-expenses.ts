@@ -2,7 +2,7 @@ import { Knex } from "knex";
 
 
 export async function up(knex: Knex): Promise<void> {
-    await knex.schema.createTable('expenses', (table) =>{
+    await knex.schema.createTable('expenses', (table) => {
         table.uuid('id').primary()
         table.text('expenses_name').notNullable()
         table.text('image_path')
@@ -12,7 +12,7 @@ export async function up(knex: Knex): Promise<void> {
 }
 
 export async function down(knex: Knex): Promise<void> {
-    
+
     await knex.schema.dropTable('expenses')
 }
 

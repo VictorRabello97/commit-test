@@ -1,39 +1,39 @@
-import {knex, Knex} from 'knex'
-import {v4 as uuidv4} from 'uuid'
+import { knex, Knex } from 'knex'
+import { v4 as uuidv4 } from 'uuid'
 
 
 class ProjectsRepository {
     private db: Knex;
 
-    constructor(db: Knex){
+    constructor(db: Knex) {
         this.db = db
     }
 
-    async getAllProjects(sessionId: string){
+    async getAllProjects(sub: string) {
         return this.db('projects')
-        .where('session_id', sessionId)
-        .select()
+            .where('user_id', sub)
+            .select()
     }
 
-    async getProjectsByDate(sessionId: string, startDate: string, endDate: string){
+    async getProjectsByDate(sub: string, startDate: string, endDate: string) {
         return this.db('projects')
-        .where('session_id', sessionId)
-        .whereBetween('created_at', [startDate, endDate])
-        .select();
+            .where('user_id', sub)
+            .whereBetween('created_at', [startDate, endDate])
+            .select();
     }
 
-    async getProjectsById(sessionId: string, id: string){
+    async getProjectsById(sub: string, id: string) {
         return this.db('projects')
-        .where('session_id', sessionId)
-        .where('id', id)
-        .first()
+            .where('user_id', sub)
+            .where('id', id)
+            .first()
     }
 
-    async getBalanceOfProjects(sessionId: string){
+    async getSummaryOfProjects(sub: string) {
         return this.db('projects')
-        .where('session_id', sessionId)
-        .sum('value', {as: 'summary of values'})
-        .first()
+            .where('user_id', sub)
+            .sum('value', { as: 'summary of values' })
+            .first()
     }
 
     async postCreateProject(projectsData: {
@@ -42,37 +42,36 @@ class ProjectsRepository {
         value: number,
         session_id: string,
         its_paid: string,
+        user_id: string
         person: string
     }) {
         const id = uuidv4();
-    await this.db('projects').insert({
-      id, ...projectsData
-    });
+        await this.db('projects').insert({
+            id, ...projectsData
+        });
 
-    console.log('aaaaaaaaaaaaaaa')
+        const user = await this.db('users').where({ id: projectsData.user_id })
+            .first()
 
-    const user = await this.db('users').where({session_id: projectsData.session_id})
-    .first()
+        console.log(user)
 
-    console.log(user)
+        if (user) {
+            await this.db('users')
+                .where({ id: user.id })
+                .update({ balance: user.balance + projectsData.value })
 
-    if (user){
-      await this.db('users')
-      .where({id: user.id})
-      .update({balance: user.balance + projectsData.value})
+            console.log('Saldo após a atualização:', user.balance);
 
-      console.log('Saldo após a atualização:', user.balance);
-
-    }
+        }
     }
 
-    async deleteProjectById(sessionId: string, id: string){
+    async deleteProjectById(sub: string, id: string) {
         return this.db('projects')
-        .delete()
-        .where({
-            session_id: sessionId,
-            id: id,
-        })
+            .delete()
+            .where({
+                user_id: sub,
+                id: id,
+            })
     }
 }
 

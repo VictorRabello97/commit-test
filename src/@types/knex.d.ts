@@ -1,7 +1,7 @@
 import { Knex } from "knex";
 
-declare module 'knex/types/tables'{
-    export interface Tables{
+declare module 'knex/types/tables' {
+    export interface Tables {
         projects: {
             id: string,
             project_name: string,
@@ -9,6 +9,7 @@ declare module 'knex/types/tables'{
             value: number,
             its_paid: string,
             person: string,
+            user_id: string,
             created_at: string,
             session_id?: string
         }
@@ -18,11 +19,12 @@ declare module 'knex/types/tables'{
             expenses_name: string,
             image_path: string,
             value: number,
+            user_id: string,
             created_at: string,
             session_id?: string
         }
 
-        users:{
+        users: {
             id: string,
             username: string,
             password: string,
@@ -30,6 +32,6 @@ declare module 'knex/types/tables'{
             session_id?: string,
         }
     }
-    }
+}
 
-    
+

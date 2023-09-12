@@ -6,7 +6,7 @@ import { randomUUID } from "crypto";
 
 
 
-export async function postCreateUsers(request: FastifyRequest, reply: FastifyReply){
+export async function postCreateUsers(request: FastifyRequest, reply: FastifyReply) {
 
     const createSchema = z.object({
         username: z.string(),
@@ -14,18 +14,18 @@ export async function postCreateUsers(request: FastifyRequest, reply: FastifyRep
         balance: z.number(),
     })
 
-    const {username, password, balance} = createSchema.parse(request.body)
-    
+    const { username, password, balance } = createSchema.parse(request.body)
+
     let sessionId = request.cookies.sessionId
 
-        if (!sessionId) {
-            sessionId = randomUUID()
+    if (!sessionId) {
+        sessionId = randomUUID()
 
-            reply.cookie('sessionId', sessionId, {
-                path: '/',
-                maxAge: 1000 * 60 * 60 * 24 * 7 // days
-            })
-        }
+        reply.cookie('sessionId', sessionId, {
+            path: '/',
+            maxAge: 1000 * 60 * 60 * 24 * 7 // days
+        })
+    }
 
 
     const postUsers = new userRepository(knex)
@@ -37,5 +37,5 @@ export async function postCreateUsers(request: FastifyRequest, reply: FastifyRep
         balance,
     })
 
-    return reply.code(201).send({message: 'user created'})
+    return reply.code(201).send({ message: 'user created' })
 }

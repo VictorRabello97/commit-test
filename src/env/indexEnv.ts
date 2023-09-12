@@ -1,10 +1,11 @@
 import { config } from "dotenv"
 
-import {z} from 'zod'
+import { z } from 'zod'
 
-if (process.env.NODE_ENV == 'test'){
+if (process.env.NODE_ENV == 'test') {
     config({
-        path: '.env.test'})
+        path: '.env.test'
+    })
 } else {
     config()
 }
@@ -12,6 +13,7 @@ if (process.env.NODE_ENV == 'test'){
 const envSchema = z.object({
     NODE_ENV: z.enum(['development', 'test', 'production']).default('production'),   //ENUM é informando que (é alguma dessas opções dentro do array)
     DATABASE_URL: z.string(),
+    JWT_SECRET: z.string()
 })
 
 const _env = envSchema.safeParse(process.env)

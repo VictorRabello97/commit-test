@@ -11,9 +11,9 @@ class ExpenseRepository {
     this.db = db;
   }
 
-  async getSpecificSummary(sessionId: string, name: string) {
+  async getSpecificSummary(sub: string, name: string) {
     return this.db('expenses')
-      .where('session_id', sessionId)
+      .where('user_id', sub)
       .where('expenses_name', name)
       .sum('value', { as: 'Summary' })
       .first();
@@ -22,6 +22,7 @@ class ExpenseRepository {
   async postCreateExpense(expenseData: {
     expenses_name: string,
     image_path: string,
+    user_id: string,
     session_id: string,
     value: number
   }) {
@@ -30,34 +31,34 @@ class ExpenseRepository {
       id, ...expenseData
     });
 
-    const user = await this.db('users').where({session_id: expenseData.session_id})
-    .first()
+    const user = await this.db('users').where({ id: expenseData.user_id })
+      .first()
 
     console.log(user)
 
-    if (user){
+    if (user) {
       await this.db('users')
-      .where({id: user.id})
-      .update({balance: user.balance - expenseData.value})
+        .where({ id: user.id })
+        .update({ balance: user.balance - expenseData.value })
 
     }
-    
+
     return user
-    
+
 
   }
 
-  async getSummaryOfAllExpenses(sessionId: string){
+  async getSummaryOfAllExpenses(sub: string) {
     return this.db('expenses')
-    .where('session_id', sessionId)
-    .sum('value', {as: 'Summary of all values'})
-    .first()
+      .where('user_id', sub)
+      .sum('value', { as: 'Summary of all values' })
+      .first()
   }
 
-  async getListOfAllExpenses(sessionId: string){
+  async getListOfAllExpenses(sub: string) {
     return this.db('expenses')
-    .where('session_id', sessionId)
-    .select()
+      .where('user_id', sub)
+      .select()
   }
 }
 
