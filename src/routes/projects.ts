@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify"
-import { CheckSessionIdExist } from "../middleweres/checkSessionIdExist"
+import { CheckJWT } from "../middleweres/checkJWT"
 import { createProject, getAllProjects, SumOfProjects, getProjectById, deleteProject, getProjectsByDateRange } from "../controller/ProjectsControllers.js"
 
 
@@ -7,25 +7,25 @@ import { createProject, getAllProjects, SumOfProjects, getProjectById, deletePro
 export async function projectsRoutes(app: FastifyInstance) {
 
 
-    app.get('/balance', { preHandler: [CheckSessionIdExist] }, async (request, reply) => {
+    app.get('/balance', { preHandler: [CheckJWT] }, async (request, reply) => {
 
         const balance = await SumOfProjects(request, reply)
         return balance
     })
 
-    app.get('/', { preHandler: [CheckSessionIdExist] },
+    app.get('/', { preHandler: [CheckJWT] },
         async (request, reply) => {
 
             const getAll = await getAllProjects(request, reply)
             return getAll
         })
 
-    app.get('/data', { preHandler: [CheckSessionIdExist] }, async (request, reply) => {
+    app.get('/data', { preHandler: [CheckJWT] }, async (request, reply) => {
         const getByDate = await getProjectsByDateRange(request, reply)
         return getByDate
     })
 
-    app.get('/:id', { preHandler: [CheckSessionIdExist] }, async (request, reply) => {
+    app.get('/:id', { preHandler: [CheckJWT] }, async (request, reply) => {
 
         const getById = await getProjectById(request, reply)
         return getById
@@ -37,7 +37,7 @@ export async function projectsRoutes(app: FastifyInstance) {
 
     })
 
-    app.delete('/:id', { preHandler: [CheckSessionIdExist] }, async (request, reply) => {
+    app.delete('/:id', { preHandler: [CheckJWT] }, async (request, reply) => {
 
         const deleteProjects = await deleteProject(request, reply)
 

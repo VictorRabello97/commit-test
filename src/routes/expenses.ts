@@ -1,5 +1,5 @@
 import { FastifyInstance } from "fastify";
-import { CheckSessionIdExist } from "../middleweres/checkSessionIdExist"
+import { CheckJWT } from "../middleweres/checkJWT"
 import { getAllExpenses, postCreateExpense, getAllSummary, getSummaryOfSpecificExpense } from "../controller/expensesControllers";
 
 export async function expensesRoute(app: FastifyInstance) {
@@ -8,20 +8,20 @@ export async function expensesRoute(app: FastifyInstance) {
         await postCreateExpense(request, reply)
     })
 
-    app.get('/summary', { preHandler: [CheckSessionIdExist] }, async (request) => {
+    app.get('/summary', { preHandler: [CheckJWT] }, async (request) => {
         const summary = await getAllSummary(request)
 
         return summary
 
     })
 
-    app.get('/summarySpecific', { preHandler: [CheckSessionIdExist] }, async (request, reply) => {
+    app.get('/summarySpecific', { preHandler: [CheckJWT] }, async (request, reply) => {
         const summarySpecific = await getSummaryOfSpecificExpense(request, reply)
 
         return summarySpecific
     })
 
-    app.get('/', { preHandler: [CheckSessionIdExist] },
+    app.get('/', { preHandler: [CheckJWT] },
         async (request, reply) => {
 
             const expense = await getAllExpenses(request, reply)

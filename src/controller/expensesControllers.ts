@@ -17,8 +17,6 @@ export async function postCreateExpense(request: FastifyRequest, reply: FastifyR
 
     let sessionId = request.cookies.sessionId
 
-    await request.jwtVerify()
-
     const { sub } = request.user
 
     console.log(sessionId)
@@ -49,10 +47,7 @@ export async function postCreateExpense(request: FastifyRequest, reply: FastifyR
 }
 
 
-
 export async function getAllSummary(request: FastifyRequest) {
-
-  await request.jwtVerify()
 
   const { sub } = request.user
 
@@ -73,8 +68,6 @@ export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply
     name: z.string()
   })
 
-  await request.jwtVerify()
-
   const { sub } = request.user
 
   const { name } = createSchema.parse(request.query)
@@ -90,8 +83,6 @@ export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply
 
 
 export async function getAllExpenses(request: FastifyRequest, reply: FastifyReply) {
-
-  await request.jwtVerify()
 
   const { sub } = request.user
 

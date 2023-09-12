@@ -7,10 +7,6 @@ import ProjectsRepository from "../repository/projectsRepository"
 
 export async function getAllProjects(request: FastifyRequest, reply: FastifyReply) {
 
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
-
     const { sub } = request.user
 
     const getAllProject = new ProjectsRepository(knex)
@@ -27,14 +23,7 @@ export async function getProjectsByDateRange(request: FastifyRequest, reply: Fas
         endDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
     });
 
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
-
     const { sub } = request.user
-
-
-
 
     const { startDate, endDate } = getProjectsParamsSchema.parse(request.query);
 
@@ -52,10 +41,6 @@ export async function getProjectById(request: FastifyRequest, reply: FastifyRepl
         id: z.string().uuid()
     })
 
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
-
     const { sub } = request.user
 
     const { id } = getTransactionsParamsSchema.parse(request.params)
@@ -68,10 +53,6 @@ export async function getProjectById(request: FastifyRequest, reply: FastifyRepl
 }
 
 export async function SumOfProjects(request: FastifyRequest, reply: FastifyReply) {
-
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
 
     const { sub } = request.user
 
@@ -93,13 +74,7 @@ export async function createProject(request: FastifyRequest, reply: FastifyReply
 
     })
 
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
-
     const { sub } = request.user
-
-
 
     const { project_name, client_name, value, its_paid, person } = createTransactionBodySchema
         .parse(request.body)
@@ -139,10 +114,6 @@ export async function deleteProject(request: FastifyRequest, reply: FastifyReply
     const getTransactionsParamsSchema = z.object({
         id: z.string().uuid()
     })
-
-    await request.jwtVerify()
-
-    console.log(request.user.sub)
 
     const { sub } = request.user
 
