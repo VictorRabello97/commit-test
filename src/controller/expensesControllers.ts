@@ -47,16 +47,21 @@ export async function postCreateExpense(request: FastifyRequest, reply: FastifyR
 }
 
 
-export async function getAllSummary(request: FastifyRequest) {
-
-  const { sub } = request.user
-
-  const summaryRepository = new ExpenseRepository(knex)
-
-  const summary = await summaryRepository.getSummaryOfAllExpenses(sub)
+export async function getAllSummary(request: FastifyRequest, reply: FastifyReply) {
 
 
-  return summary
+  try {
+    const { sub } = request.user
+
+    const summaryRepository = new ExpenseRepository(knex)
+
+    const summary = await summaryRepository.getSummaryOfAllExpenses(sub)
+
+
+    return summary
+  } catch (error) {
+    reply.status(500).send(error)
+  }
 
 }
 
@@ -68,15 +73,24 @@ export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply
     name: z.string()
   })
 
-  const { sub } = request.user
+  try {
+    const { sub } = request.user
 
-  const { name } = createSchema.parse(request.query)
+    const { name } = createSchema.parse(request.query)
 
-  const specificRepository = new ExpenseRepository(knex)
+    const specificRepository = new ExpenseRepository(knex)
 
-  const summary = specificRepository.getSpecificSummary(sub, name)
+    const summary =  await specificRepository.getSpecificSummary(sub, name)
 
-  return summary
+
+    if (summary?.Summary === null ){
+      throw reply.status(404).send('expense not found')
+    }
+
+    return summary
+  } catch (error) {
+    reply.status(500).send(error)
+  }
 
 }
 
@@ -84,13 +98,18 @@ export async function getSummaryOfSpecificExpense(request: FastifyRequest, reply
 
 export async function getAllExpenses(request: FastifyRequest, reply: FastifyReply) {
 
-  const { sub } = request.user
+  try {
+    const { sub } = request.user
 
-  const expensesRepository = new ExpenseRepository(knex)
+    const expensesRepository = new ExpenseRepository(knex)
 
-  const listOffAllExpanses = expensesRepository.getListOfAllExpenses(sub)
+    const listOffAllExpanses = expensesRepository.getListOfAllExpenses(sub)
 
-  return listOffAllExpanses
+    return listOffAllExpanses
+
+  } catch (error) {
+    reply.status(400).send(error)
+  }
 }
 
 

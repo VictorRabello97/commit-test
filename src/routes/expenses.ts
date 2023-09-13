@@ -1,10 +1,10 @@
 import { FastifyInstance } from "fastify";
-import { CheckJWT } from "../middleweres/checkJWT"
+import { CheckJWT } from "../middleweres/checkJWT.js"
 import { getAllExpenses, postCreateExpense, getAllSummary, getSummaryOfSpecificExpense } from "../controller/expensesControllers";
 
 export async function expensesRoute(app: FastifyInstance) {
 
-    app.post('/', async (request, reply) => {
+    app.post('/', { preHandler: [CheckJWT] }, async (request, reply) => {
         await postCreateExpense(request, reply)
     })
 

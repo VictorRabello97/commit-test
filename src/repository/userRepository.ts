@@ -18,7 +18,7 @@ class userRepository {
         {
             const id = uuidv4();
 
-            const hashedPassword = await bcrypt.hash(userData.password, 10); // 10 é o custo de hashing
+            const hashedPassword = await bcrypt.hash(userData.password, 10);
 
             return this.db('users').insert({
                 id, ...userData,
@@ -26,7 +26,7 @@ class userRepository {
             })
         }
 
-        async checkUser(loginData: {
+    async checkUser(loginData: {
             username: string,
             password: string,
         }) {

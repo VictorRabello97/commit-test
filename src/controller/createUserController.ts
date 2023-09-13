@@ -13,7 +13,7 @@ export async function postCreateUsers(request: FastifyRequest, reply: FastifyRep
         password: z.string(),
         balance: z.number().default(0)
     })
-
+    
     const { username, password, balance} = createSchema.parse(request.body)
 
     let sessionId = request.cookies.sessionId
